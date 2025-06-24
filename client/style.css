@@ -1,0 +1,91 @@
+/* Basic Page Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    margin: 0;
+}
+
+/* Main Game Container */
+.game-container {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+/* Game Status Message */
+.game-status {
+    margin: 20px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    min-height: 1.5em; /* Prevents layout shift */
+    color: #555;
+}
+
+/* Game Board Grid */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin: 0 auto;
+    width: 310px; /* 3*100px + 2*5px */
+    background-color: #333;
+    border: 5px solid #333;
+    border-radius: 5px;
+}
+
+/* Individual Cell Styling */
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3.5em; /* Larger font for X and O */
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none; /* Prevents text selection */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.cell:hover {
+    background-color: #f7f7f7;
+}
+
+/* Player-specific colors */
+.cell.x {
+    color: #007bff; /* Blue for X */
+}
+
+.cell.o {
+    color: #dc3545; /* Red for O */
+}
+
+/* Button Styling */
+.restart-button {
+    margin-top: 25px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.restart-button:hover {
+    background-color: #218838;
+}

@@ -143,7 +143,6 @@ app.use(express.json());
 
 // --- API Routes ---
 app.post('/api/create-game', async (req, res) => {
-    // This function remains the same
     logger.info("Request received for /api/create-game");
     try {
         const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
@@ -151,13 +150,17 @@ app.post('/api/create-game', async (req, res) => {
             publicKeyEncoding: { type: 'spki', format: 'pem' },
             privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
         });
+
+        // ---vvv--- CHANGE IS HERE ---vvv---
         const gameRef = await db.collection('games').add({
             privateKeyPem: privateKey,
-            playerX_Id: "playerX",
-            playerO_Id: "playerO",
+            playerX_Id: "DOGE", // Changed from "playerX"
+            playerO_Id: "PEPE", // Changed from "playerO"
             createdAt: FieldValue.serverTimestamp(),
             fsmState: 'PLAYER_X_TURN'
         });
+        // ---^^^--- END OF CHANGE ---^^^---
+
         const gameId = gameRef.id;
         logger.info(`New game created with ID: ${gameId}`);
         res.status(200).json({ gameId: gameId, publicKeyPem: publicKey });

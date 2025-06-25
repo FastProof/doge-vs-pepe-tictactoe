@@ -1,6 +1,6 @@
 /* Basic Page Styles */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,12 +20,13 @@ body {
 
 h1 {
     color: #333;
+    font-size: 2em;
 }
 
 /* Game Status Message */
 .game-status {
     margin: 20px 0;
-    font-size: 1.2em;
+    font-size: 1.5em;
     font-weight: bold;
     min-height: 1.5em; /* Prevents layout shift */
     color: #555;
@@ -39,8 +40,8 @@ h1 {
     gap: 5px;
     margin: 0 auto;
     width: 310px; /* 3*100px + 2*5px */
-    background-color: #333;
-    border: 5px solid #333;
+    background-color: #4b4b4b;
+    border: 5px solid #4b4b4b;
     border-radius: 5px;
 }
 
@@ -49,37 +50,38 @@ h1 {
     width: 100px;
     height: 100px;
     background-color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3.5em; /* Larger font for X and O */
-    font-weight: bold;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     cursor: pointer;
-    user-select: none; /* Prevents text selection */
+    user-select: none;
     transition: background-color 0.2s ease-in-out;
 }
 
 .cell:hover {
-    background-color: #f7f7f7;
+    background-color: #fdfde8;
 }
 
-/* Player-specific colors */
+/* --- MEME THEME --- */
+/* DOGE (X) */
 .cell.x {
-    color: #007bff; /* Blue for X */
+    background-image: url('DogeLogo.jpg'); /* Correct Doge Image */
 }
 
+/* PEPE (O) */
 .cell.o {
-    color: #dc3545; /* Red for O */
+    background-image: url('pepe-token-logo.png'); /* Correct Pepe Image */
 }
 
 /* Button Styling */
 .restart-button {
     margin-top: 25px;
-    padding: 10px 20px;
-    font-size: 1em;
+    padding: 12px 25px;
+    font-size: 1.2em;
     font-weight: bold;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
     color: #fff;
-    background-color: #28a745;
+    background-color: #ff9800; /* A fun, vibrant color */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -87,5 +89,5 @@ h1 {
 }
 
 .restart-button:hover {
-    background-color: #218838;
+    background-color: #e68900;
 }

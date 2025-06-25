@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let sessionPublicKey; // To store the public key from the server
 
     // Player IDs are hardcoded for the POC
-    const playerX_Id = 'playerX';
-    const playerO_Id = 'playerO';
+    const playerX_Id = 'DOGE';
+    const playerO_Id = 'PEPE';
 
     // --- Crypto Helper Functions ---
 
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cellDiv.dataset.row = rowIndex;
                 cellDiv.dataset.col = colIndex;
                 if (cell) {
-                    cellDiv.textContent = cell;
+                    // We will use CSS to set the background image
                     cellDiv.classList.add(cell.toLowerCase());
                 }
                 boardElement.appendChild(cellDiv);
@@ -251,16 +251,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         switch (currentGameState.currentState) {
             case STATES.PLAYER_X_TURN:
-                statusElement.textContent = `Player X's Turn (Game ID: ${sessionGameId ? sessionGameId.substring(0, 5) : ''}...)`;
+                statusElement.textContent = `DOGE's Turn (Game ID: ${sessionGameId ? sessionGameId.substring(0, 5) : ''}...)`;
                 break;
             case STATES.PLAYER_O_TURN:
-                statusElement.textContent = `Player O's Turn (Game ID: ${sessionGameId ? sessionGameId.substring(0, 5) : ''}...)`;
+                statusElement.textContent = `PEPE's Turn (Game ID: ${sessionGameId ? sessionGameId.substring(0, 5) : ''}...)`;
                 break;
             case STATES.GAME_OVER_X_WINS:
-                statusElement.textContent = "Game Over: Player X Wins!";
+                statusElement.textContent = "Game Over: DOGE Wins!";
                 break;
             case STATES.GAME_OVER_O_WINS:
-                statusElement.textContent = "Game Over: Player O Wins!";
+                statusElement.textContent = "Game Over: PEPE Wins!";
                 break;
             case STATES.GAME_OVER_DRAW:
                 statusElement.textContent = "Game Over: It's a Draw!";

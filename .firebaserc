@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "hash-verifier"
-  }
+    "default": "hash-verifier",
+    "staging": "doge-pepe-staging2"
+  },
+  "targets": {},
+  "etags": {}
 }

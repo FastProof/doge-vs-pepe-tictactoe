@@ -64,6 +64,14 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.*
 
 # dataconnect generated files
 .dataconnect
+
+# Vite / Client Build Artifacts
+# Ignore the production build output directory
+/client/dist
+
+# Ignore Vite's local cache
+/client/.vite

@@ -188,11 +188,9 @@ function getInitialGameState(playerX_Id, playerO_Id) {
 }
 
 // Export the functions and constants so other files in the server can use them.
-/*
-module.exports = {
+export {
     STATES,
     EVENTS,
     transition,
     getInitialGameState,
 };
-*/

@@ -136,10 +136,30 @@ function verifyFsmGameplay(gameLog, playerX_Id, playerO_Id) {
     return true;
 }
 
+// --- NEW: App Check Verification Middleware ---
+const appCheckVerification = async (req, res, next) => {
+    const appCheckToken = req.header("X-Firebase-AppCheck");
+  
+    if (!appCheckToken) {
+      res.status(401).send("Unauthorized");
+      return;
+    }
+  
+    try {
+      await admin.appCheck().verifyToken(appCheckToken);
+      next(); // If token is valid, proceed to the next handler
+    } catch (err) {
+      res.status(401).send("Unauthorized");
+    }
+  };
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
+
+// --- USE THE MIDDLEWARE ---
+// This line tells Express to run our verification on every single request
+app.use(appCheckVerification);
 
 // --- API Routes ---
 app.post('/api/create-game', async (req, res) => {
@@ -220,4 +240,11 @@ app.post('/api/submit-log', async (req, res) => {
 });
 
 // Export the Express app, specifying the region for the function
-exports.api = onRequest({ region: "us-west2" }, app);
+exports.api = onRequest(
+    { 
+        region: "us-west2", 
+        enforceAppCheck: true,
+        consumeAppCheckToken: true, 
+    }, 
+    app
+);

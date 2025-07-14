@@ -1,5 +1,37 @@
 // client/main.js
 
+// --- MODULE IMPORTS ---
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// We will add App Check back in the next step.
+import { initializeAppCheck, ReCaptchaV3Provider, getToken} from "firebase/app-check";
+// Import the game logic from our local file
+import { STATES, EVENTS, transition, getInitialGameState } from './fsm.js';
+
+
+// --- FIREBASE INITIALIZATION ---
+// Your web app's Firebase configuration
+// This is for your "hash-verifier" (default) project
+const firebaseConfig = {
+    apiKey: "AIzaSyBgwywKlo3Wh1-rLoU5bs9wQh0Ive17ZMY",
+    authDomain: "doge-pepe-staging2.firebaseapp.com",
+    projectId: "doge-pepe-staging2",
+    storageBucket: "doge-pepe-staging2.firebasestorage.app",
+    messagingSenderId: "1092490642375",
+    appId: "1:1092490642375:web:fbb3002d0e793152d14fe2",
+    measurementId: "G-43C0F22572"
+  };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+    isTokenAutoRefreshEnabled: true
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
     const boardElement = document.getElementById('game-board');
@@ -61,6 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
         statusElement.textContent = "Encrypting and submitting log...";
 
         try {
+            // --- ADD THIS BLOCK TO GET THE APP CHECK TOKEN ---
+            let appCheckTokenResponse;
+            try {
+                appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+            } catch (err) {
+                console.error("Failed to get App Check token:", err);
+                throw new Error("Could not get App Check token.");
+            }
+            // ---------------------------------------------
+            
             // --- HYBRID ENCRYPTION IMPLEMENTATION ---
             const symmetricKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
             const iv = window.crypto.getRandomValues(new Uint8Array(12));
@@ -75,7 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const response = await fetch('/api/submit-log', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // --- ADD THE TOKEN TO THE REQUEST HEADER ---
+                    'X-Firebase-AppCheck': appCheckTokenResponse.token,
+                },
                 body: JSON.stringify({
                     gameId: sessionGameId,
                     encryptedLog: arrayBufferToBase64(encryptedLogBuffer),
@@ -202,7 +248,24 @@ document.addEventListener('DOMContentLoaded', () => {
         statusElement.textContent = "Creating new game on server...";
         
         try {
-            const response = await fetch('/api/create-game', { method: 'POST' });
+            // --- ADD THIS BLOCK TO GET THE APP CHECK TOKEN ---
+            let appCheckTokenResponse;
+            try {
+                appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+            } catch (err) {
+                console.error("Failed to get App Check token:", err);
+                throw new Error("Could not get App Check token.");
+            }
+            // ---------------------------------------------
+
+            const response = await fetch('/api/create-game', {
+                method: 'POST',
+                headers: {
+                    // --- ADD THE TOKEN TO THE REQUEST HEADER ---
+                    'X-Firebase-AppCheck': appCheckTokenResponse.token,
+                }
+            });
+            
             if (!response.ok) throw new Error(`Server failed to create game: ${response.status}`);
             
             const gameData = await response.json();

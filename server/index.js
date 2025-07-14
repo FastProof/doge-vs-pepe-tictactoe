@@ -141,7 +141,7 @@ const appCheckVerification = async (req, res, next) => {
     const appCheckToken = req.header("X-Firebase-AppCheck");
   
     if (!appCheckToken) {
-      res.status(401).send("Unauthorized");
+        res.status(401).send("Unauthorized");
       return;
     }
   
@@ -149,7 +149,7 @@ const appCheckVerification = async (req, res, next) => {
       await admin.appCheck().verifyToken(appCheckToken);
       next(); // If token is valid, proceed to the next handler
     } catch (err) {
-      res.status(401).send("Unauthorized");
+        res.status(401).send("Unauthorized");
     }
   };
 
@@ -159,7 +159,16 @@ app.use(express.json());
 
 // --- USE THE MIDDLEWARE ---
 // This line tells Express to run our verification on every single request
-app.use(appCheckVerification);
+// --- USE THE MIDDLEWARE CONDITIONALLY ---
+// Only enforce App Check if the debug flag is NOT set to "true"
+if (process.env.APP_CHECK_DEBUG !== "true") {
+    //app.use('/api', appCheckVerification);
+    app.use(appCheckVerification);
+    logger.info("App Check middleware ENABLED.");
+  } else {
+    logger.warn("App Check middleware is DISABLED for local development.");
+  }
+
 
 // --- API Routes ---
 app.post('/api/create-game', async (req, res) => {

@@ -12,25 +12,32 @@ import { STATES, EVENTS, transition, getInitialGameState } from './fsm.js';
 
 // --- FIREBASE INITIALIZATION ---
 // Your web app's Firebase configuration
-// This is for your "hash-verifier" (default) project
+// Vite automatically selects the correct .env file based on the environment
 const firebaseConfig = {
-    apiKey: "AIzaSyBgwywKlo3Wh1-rLoU5bs9wQh0Ive17ZMY",
-    authDomain: "doge-pepe-staging2.firebaseapp.com",
-    projectId: "doge-pepe-staging2",
-    storageBucket: "doge-pepe-staging2.firebasestorage.app",
-    messagingSenderId: "1092490642375",
-    appId: "1:1092490642375:web:fbb3002d0e793152d14fe2",
-    measurementId: "G-43C0F22572"
-  };
+    apiKey: import.meta.env.VITE_API_KEY,
+    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_ID
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-const appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
-    isTokenAutoRefreshEnabled: true
-});
+let appCheck; // <-- Define appCheck outside the block
+
+// --- INITIALIZE APP CHECK CONDITIONALLY ---
+if (import.meta.env.VITE_APP_CHECK_DEBUG !== "true") {
+  appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+      isTokenAutoRefreshEnabled: true
+  });
+  console.log("App Check ENABLED.");
+} else {
+  console.warn("App Check is DISABLED for local development.");
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
@@ -94,9 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // --- ADD THIS BLOCK TO GET THE APP CHECK TOKEN ---
+            const headers = { 'Content-Type': 'application/json' };
             let appCheckTokenResponse;
             try {
-                appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+                if (appCheck) {
+                    appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+                    headers['X-Firebase-AppCheck'] = appCheckTokenResponse.token;
+                }
             } catch (err) {
                 console.error("Failed to get App Check token:", err);
                 throw new Error("Could not get App Check token.");
@@ -117,11 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const response = await fetch('/api/submit-log', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    // --- ADD THE TOKEN TO THE REQUEST HEADER ---
-                    'X-Firebase-AppCheck': appCheckTokenResponse.token,
-                },
+                headers: headers,
                 body: JSON.stringify({
                     gameId: sessionGameId,
                     encryptedLog: arrayBufferToBase64(encryptedLogBuffer),
@@ -249,9 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             // --- ADD THIS BLOCK TO GET THE APP CHECK TOKEN ---
+            const headers = { 'Content-Type': 'application/json' };
             let appCheckTokenResponse;
             try {
-                appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+                if (appCheck) {
+                    appCheckTokenResponse = await getToken(appCheck, /* forceRefresh= */ false);
+                    headers['X-Firebase-AppCheck'] = appCheckTokenResponse.token;
+                }
             } catch (err) {
                 console.error("Failed to get App Check token:", err);
                 throw new Error("Could not get App Check token.");
@@ -260,10 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const response = await fetch('/api/create-game', {
                 method: 'POST',
-                headers: {
-                    // --- ADD THE TOKEN TO THE REQUEST HEADER ---
-                    'X-Firebase-AppCheck': appCheckTokenResponse.token,
-                }
+                headers: headers
             });
             
             if (!response.ok) throw new Error(`Server failed to create game: ${response.status}`);

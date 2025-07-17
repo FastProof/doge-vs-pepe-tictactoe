@@ -8,9 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "serve": "firebase emulators:start --only functions",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
+    "logs": "firebase functions:log",
+    "build:client": "npm run build --prefix ../client -- --mode staging",
+    "deploy:staging": "npm run build:client && firebase deploy --only hosting,functions,firestore -P staging"
+},
   "engines": {
     "node": "20"
   },
@@ -19,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.3.2"

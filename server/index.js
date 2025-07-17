@@ -1,8 +1,20 @@
 // server/index.js
 
+//require('dotenv').config();
+const path = require('path');
+if (process.env.FUNCTIONS_EMULATOR === 'true') {
+    console.log('Emulator detected: Load .env.local file');
+    require('dotenv').config({ path: path.resolve(__dirname, '.env.local') });
+}
+
 // Use the v2 onRequest function for HTTP triggers
 const { onRequest } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
+
+// --- ADD THIS LINE ---
+// This makes the functions.config() object available
+const functions = require("firebase-functions");
+// -------------------
 
 // Import necessary modules
 const admin = require('firebase-admin');
@@ -161,12 +173,11 @@ app.use(express.json());
 // This line tells Express to run our verification on every single request
 // --- USE THE MIDDLEWARE CONDITIONALLY ---
 // Only enforce App Check if the debug flag is NOT set to "true"
-if (process.env.APP_CHECK_DEBUG !== "true") {
-    //app.use('/api', appCheckVerification);
+if (process.env.APP_CHECK_DEBUG !== 'true') {
     app.use(appCheckVerification);
     logger.info("App Check middleware ENABLED.");
   } else {
-    logger.warn("App Check middleware is DISABLED for local development.");
+    logger.warn("App Check middleware is DISABLED for local development use.");
   }
 
 

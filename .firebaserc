@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "hash-verifier",
+    "dev": "doge-pepe-staging2",
     "staging": "doge-pepe-staging2"
   },
   "targets": {},

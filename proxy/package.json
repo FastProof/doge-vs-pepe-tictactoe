@@ -1,0 +1,16 @@
+{
+    "name": "proxy",
+    "private": true,
+    "main": "index.js",
+    "dependencies": {
+        "dotenv-cli": "^8.0.0",
+        "express": "^4.19.2",
+        "firebase-admin": "^12.2.0",
+        "firebase-functions": "^5.0.1",
+        "google-auth-library": "^9.11.0",
+        "node-fetch": "^3.3.2"
+    },
+    "engines": {
+        "node": "20"
+    }
+}

@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             console.log("Log successfully encrypted. Submitting to server...");
             
-            const response = await fetch('/api/submit-log', {
+            const response = await fetch('/proxy/submit-log', {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // ---------------------------------------------
 
-            const response = await fetch('/api/create-game', {
+            const response = await fetch('/proxy/create-game', {
                 method: 'POST',
                 headers: headers
             });

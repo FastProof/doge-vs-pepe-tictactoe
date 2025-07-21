@@ -3,11 +3,14 @@
 //require('dotenv').config();
 const path = require('path');
 if (process.env.FUNCTIONS_EMULATOR === 'true') {
-    console.log('Emulator detected: Load .env.local file');
+    console.log('Proxy: Emulator detected: Load .env.local file');
     require('dotenv').config({ path: path.resolve(__dirname, '.env.local') });
-} else {
-  console.log('Emulator detected: Load .env.staging file');
+} else if (process.env.IN_STAGING === 'true') {
+  console.log('Proxy: Emulator not detected: Load .env.staging file');
   require('dotenv').config({ path: path.resolve(__dirname, '.env.staging') });  
+} else if (process.env.IN_PRODUCTION === 'true') {
+  console.log('Proxy: Emulator not detected: Load .env.production file');
+  require('dotenv').config({ path: path.resolve(__dirname, '.env.production') });
 }
 
 //const functions = require("firebase-functions/v2/https");

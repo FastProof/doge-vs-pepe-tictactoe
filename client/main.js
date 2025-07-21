@@ -5,7 +5,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // We will add App Check back in the next step.
-import { initializeAppCheck, ReCaptchaV3Provider, getToken} from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaV3Provider, ReCaptchaEnterpriseProvider, getToken} from "firebase/app-check";
 // Import the game logic from our local file
 import { STATES, EVENTS, transition, getInitialGameState } from './fsm.js';
 
@@ -22,6 +22,12 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_APP_ID
 };
 
+// Now, check if the measurementId exists in the environment variables.
+// This will only be true when building for production.
+if (import.meta.env.VITE_MEASUREMENT_ID) {
+    firebaseConfig.measurementId = import.meta.env.VITE_MEASUREMENT_ID;
+  }
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -31,7 +37,7 @@ let appCheck; // <-- Define appCheck outside the block
 // --- INITIALIZE APP CHECK CONDITIONALLY ---
 if (import.meta.env.VITE_APP_CHECK_DEBUG !== "true") {
   appCheck = initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+      provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_SITE_KEY), //ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY)
       isTokenAutoRefreshEnabled: true
   });
   console.log("App Check ENABLED.");

@@ -10,6 +10,17 @@
         "firebase-debug.*.log",
         "*.local"
       ]
+    },
+    {
+      "source": "proxy",
+      "codebase": "proxy",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
     }
   ],
   "hosting": {
@@ -21,14 +32,14 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
+        "source": "/proxy/**",
         "run": {
-          "serviceId": "api",
+          "serviceId": "proxy",
           "region": "us-west2"
         }
       },
       {
-        "source": "!/api/**",
+        "source": "!/proxy/**",
         "destination": "/index.html"
       }
     ]

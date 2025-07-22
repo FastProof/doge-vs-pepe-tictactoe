@@ -10,7 +10,8 @@
     "serve": "firebase emulators:start --only functions",
     "logs": "firebase functions:log",
     "build:client": "npm run build --prefix ../client -- --mode staging",
-    "deploy:staging": "npm run build:client && firebase deploy --only hosting,functions,firestore -P staging"
+    "deploy:staging": "npm run build:client && firebase deploy --only hosting,functions,firestore -P staging",
+    "deploy:prod": "npm run build --prefix ../client && firebase deploy --only hosting,functions,firestore"
 },
   "engines": {
     "node": "20"

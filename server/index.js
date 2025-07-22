@@ -149,7 +149,7 @@ function verifyFsmGameplay(gameLog, playerX_Id, playerO_Id) {
 }
 
 // --- NEW: App Check Verification Middleware ---
-const appCheckVerification = async (req, res, next) => {
+/* const appCheckVerification = async (req, res, next) => {
     const appCheckToken = req.header("X-Firebase-AppCheck");
   
     if (!appCheckToken) {
@@ -164,22 +164,33 @@ const appCheckVerification = async (req, res, next) => {
         res.status(401).send("Unauthorized");
     }
   };
+*/
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
+// --- NEW: Add this diagnostic middleware ---
+app.use((req, res, next) => {
+    logger.info("--- API function received a request ---", {
+      path: req.path,
+      originalUrl: req.originalUrl
+    });
+    next(); // This passes the request to your actual routes
+  });
+  // -----------------------------------------
+
 // --- USE THE MIDDLEWARE ---
 // This line tells Express to run our verification on every single request
 // --- USE THE MIDDLEWARE CONDITIONALLY ---
 // Only enforce App Check if the debug flag is NOT set to "true"
-if (process.env.APP_CHECK_DEBUG !== 'true') {
+/* if (process.env.APP_CHECK_DEBUG !== 'true') {
     app.use(appCheckVerification);
     logger.info("App Check middleware ENABLED.");
   } else {
     logger.warn("App Check middleware is DISABLED for local development use.");
   }
-
+*/
 
 // --- API Routes ---
 app.post('/api/create-game', async (req, res) => {
@@ -268,3 +279,4 @@ exports.api = onRequest(
     }, 
     app
 );
+//exports.api = onRequest({ region: "us-west2" }, app);
